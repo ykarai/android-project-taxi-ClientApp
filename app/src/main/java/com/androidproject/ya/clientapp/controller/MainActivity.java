@@ -47,9 +47,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private EditText nameEditText;
     private EditText phoneEditText;
     private EditText eMailEditText;
-
-// check
-
+// i add an new line
     private Button findLocationButton;
     private Button sendClientButton;
 
