@@ -48,6 +48,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private EditText phoneEditText;
     private EditText eMailEditText;
 
+// check
 
     private Button findLocationButton;
     private Button sendClientButton;
