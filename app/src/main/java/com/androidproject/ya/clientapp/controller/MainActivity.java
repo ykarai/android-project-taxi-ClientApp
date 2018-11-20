@@ -38,7 +38,7 @@ import java.util.Locale;
 
 //import com.google.android.gms.location.places.Place;
 //import com.google.android.gms.location.places.ui.PlacePicker;
-
+//1
 public class MainActivity extends Activity implements View.OnClickListener {
 
 //7  //8  //9
