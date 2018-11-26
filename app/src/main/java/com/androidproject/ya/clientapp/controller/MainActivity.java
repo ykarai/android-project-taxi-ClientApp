@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.androidproject.ya.clientapp.R;
 import com.androidproject.ya.clientapp.model.backend.BackendFactory;
 import com.androidproject.ya.clientapp.model.backend.Const;
+import com.androidproject.ya.clientapp.model.datasource.Utils;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
@@ -41,13 +42,13 @@ import java.util.Locale;
 //1
 public class MainActivity extends Activity implements View.OnClickListener {
 
-//11//80
+    //11
     // private Edittext nameTextView;
     private EditText idEditText;
     private EditText nameEditText;
     private EditText phoneEditText;
     private EditText eMailEditText;
-// i add an new line
+    // i add an new line
     private Button findLocationButton;
     private Button sendClientButton;
 
@@ -155,7 +156,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
         });
 
-        locationTextView = (TextView) findViewById(R.id.locationTextView);
+       // locationTextView = (TextView) findViewById(R.id.locationTextView);
         distanceTextView = (TextView) findViewById(R.id.distanceTextView);
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -325,6 +326,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //            }
 //        }
 //    }
+    @SuppressLint("StaticFieldLeak")
     private void addClient() {
         final ContentValues contentValues = new ContentValues();
         contentValues.put(Const.ClientConst.ID, this.idEditText.getText().toString());
@@ -339,36 +341,48 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 super.onPreExecute();
                 //openDialog();
                 Toast.makeText(getBaseContext(),
-                        "send request ", Toast.LENGTH_LONG).show();
+                        "send request.... ", Toast.LENGTH_SHORT).show();
 
             }
-
             @Override
             protected Long doInBackground(Void... params) {
+                try {
+                    return BackendFactory.getDB().addClient(contentValues, locationA, locationB, new Utils.Action<Long>() {
+                        @Override
+                        public void onSuccess(Long obj) {
+                            Toast.makeText(getBaseContext(), "Upload successful id: " + obj, Toast.LENGTH_LONG).show();
 
-                return Long.valueOf(BackendFactory.getDB().addClient(contentValues, locationA, locationB));
+                        }
+
+                        @Override
+                        public void onFailure(Exception exception) {
+                            Toast.makeText(getBaseContext(), "Error \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
+
+                        }
+
+                        @Override
+                        public void onProgress(String status, double percent) {
+
+                        }
+                    });
+                }
+                catch (Exception e){
+                    Toast.makeText(getBaseContext(), "Error ", Toast.LENGTH_LONG).show();
+                    return  Long.valueOf(0);
+                }
+
             }
 
             @Override
             protected void onPostExecute(Long aLong) {
-                super.onPostExecute(aLong);
-                try
-                {
-                    Thread.sleep(1000);
-                }
-                catch(InterruptedException ex)
-                {
-                    Thread.currentThread().interrupt();
-                }
-                if (aLong == Long.valueOf(0))
-                    Toast.makeText(getBaseContext(), "problem with uploud", Toast.LENGTH_LONG).show();
-                else
-                    Toast.makeText(getBaseContext(), "client request added ", Toast.LENGTH_LONG).show();
+//
+//                if (aLong == Long.valueOf(0))
+//                    Toast.makeText(getBaseContext(), "problem with uploud", Toast.LENGTH_LONG).show();
+//                else
+//                    Toast.makeText(getBaseContext(), "client request added ", Toast.LENGTH_LONG).show();
             }
 
-
         }.execute();
-
 
     }
 

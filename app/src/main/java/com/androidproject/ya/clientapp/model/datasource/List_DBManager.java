@@ -23,7 +23,7 @@ public class List_DBManager implements Backend {
 
     //    public static List<Client> clients = new ArrayList<Client>();
     @Override
-    public Long addClient(ContentValues values, Location a, Location locationA) {
+    public Long addClient(ContentValues values, Location a, Location locationA,final Utils.Action<Long>action) {
 
         Client client = ContentValuesToCourse(values);
         clients.add(client);
