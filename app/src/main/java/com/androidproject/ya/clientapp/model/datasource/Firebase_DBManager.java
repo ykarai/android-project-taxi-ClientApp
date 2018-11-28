@@ -33,6 +33,20 @@ public class Firebase_DBManager implements Backend {
     }
 
 
+    public interface Action<T> {
+        void onSuccess(T obj);
+
+        void onFailure(Exception exception);
+
+        void onProgress(String status, double percent);
+    }
+
+    public interface NotifyDataChange<T> {
+        void OnDataChanged(T obj);
+
+        void onFailure(Exception exception);
+    }
+
     @Override
     public Long addClient(ContentValues values, Location a, Location b, final Utils.Action<Long> action) {
 
@@ -47,16 +61,17 @@ public class Firebase_DBManager implements Backend {
             @Override
             public void onSuccess(Void aVoid) {
                 action.onSuccess(client.getId());
-               // action.onProgress("upload student data", 100);
+                // action.onProgress("upload student data", 100);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 action.onFailure(e);
-               // action.onProgress("error upload student data", 100);
+                // action.onProgress("error upload student data", 100);
             }
         });
-
+        return client.getId();
+    }
 //        upload.addOnCompleteListener(new OnCompleteListener<Void>() {
 //            @Override
 //            public void onComplete(@NonNull Task<Void> upload) {
@@ -66,10 +81,34 @@ public class Firebase_DBManager implements Backend {
 //            }
 //
 //        });
+//    @Override
+//    public Long addClient(ContentValues values, Location a, Location b, Utils.Action<Long> action) {
+//
+//        Client client = ContentValuesToCourse(values);
+//        client.setStartPoint(a);
+//        client.setDestinationPoint(b);
+//        String key = client.getId().toString();
+//        Task<Void> upload = clientsRef.child(key).setValue(client);
+//        //clientsRef.child(key).setValue(locationA);
+//
+//        upload.addOnCompleteListener(new OnCompleteListener<Void>() {
+//            @Override
+//            public void onComplete(@NonNull Task<Void> upload) {
+//                if (upload.isSuccessful()) {
+//                    flagTrue();
+//                }
+//            }
+//
+//        });
+//        if (flag == false)
+//            return client.getId();
+//        else
+//            return Long.valueOf(0);
+//    }
 
-        return client.getId();
+    private void flagTrue() {
+        flag = true;
     }
-
 
 
     @Override

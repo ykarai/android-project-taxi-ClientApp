@@ -3,7 +3,6 @@ package com.androidproject.ya.clientapp.model.backend;
 import android.content.ContentValues;
 import android.location.Location;
 
-import com.androidproject.ya.clientapp.model.datasource.Firebase_DBManager;
 import com.androidproject.ya.clientapp.model.datasource.Utils;
 import com.androidproject.ya.clientapp.model.entities.Client;
 

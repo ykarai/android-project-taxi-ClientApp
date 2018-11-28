@@ -39,16 +39,17 @@ import java.util.Locale;
 
 //import com.google.android.gms.location.places.Place;
 //import com.google.android.gms.location.places.ui.PlacePicker;
-//1
+
 public class MainActivity extends Activity implements View.OnClickListener {
 
-    //11
+//try78
     // private Edittext nameTextView;
     private EditText idEditText;
     private EditText nameEditText;
     private EditText phoneEditText;
     private EditText eMailEditText;
-    // i add an new line
+
+
     private Button findLocationButton;
     private Button sendClientButton;
 
@@ -156,7 +157,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
         });
 
-       // locationTextView = (TextView) findViewById(R.id.locationTextView);
+        locationTextView = (TextView) findViewById(R.id.locationTextView);
         distanceTextView = (TextView) findViewById(R.id.distanceTextView);
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -334,6 +335,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         contentValues.put(Const.ClientConst.PHONE, this.phoneEditText.getText().toString());
         contentValues.put(Const.ClientConst.EMAIL, this.eMailEditText.getText().toString());
         //Long x = BackendFactory.getDB().addClient(contentValues);
+
+
         new AsyncTask<Void, Void, Long>() {
 
             @Override
@@ -370,7 +373,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     Toast.makeText(getBaseContext(), "Error ", Toast.LENGTH_LONG).show();
                     return  Long.valueOf(0);
                 }
-
             }
 
             @Override
@@ -383,6 +385,51 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
 
         }.execute();
+
+
+
+
+
+
+
+
+//        new AsyncTask<Void, Void, Long>() {
+//
+//            @Override
+//            protected void onPreExecute() {
+//                super.onPreExecute();
+//                //openDialog();
+//                Toast.makeText(getBaseContext(),
+//                        "send request ", Toast.LENGTH_LONG).show();
+//
+//            }
+//
+//            @Override
+//            protected Long doInBackground(Void... params) {
+//
+//                return Long.valueOf(BackendFactory.getDB().addClient(contentValues, locationA, locationB));
+//            }
+//
+//            @Override
+//            protected void onPostExecute(Long aLong) {
+//                super.onPostExecute(aLong);
+//                try
+//                {
+//                    Thread.sleep(1000);
+//                }
+//                catch(InterruptedException ex)
+//                {
+//                    Thread.currentThread().interrupt();
+//                }
+//                if (aLong == Long.valueOf(0))
+//                    Toast.makeText(getBaseContext(), "problem with uploud", Toast.LENGTH_LONG).show();
+//                else
+//                    Toast.makeText(getBaseContext(), "client request added ", Toast.LENGTH_LONG).show();
+//            }
+//
+//
+//        }.execute();
+
 
     }
 
