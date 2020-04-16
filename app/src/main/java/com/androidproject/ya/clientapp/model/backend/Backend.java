@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface Backend {
 
-    Long addClient(ContentValues client, Location a, Location b, Utils.Action<Long> action);
+    Long addClient(ContentValues client, String city, Location a, Location b, Utils.Action<Long> action);
     boolean removeClient(Long id);
     boolean updateClient(Long id, ContentValues values);
     List<Client> getClients();

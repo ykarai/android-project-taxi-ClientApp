@@ -4,6 +4,7 @@ package com.androidproject.ya.clientapp.model.entities;
 import android.location.Location;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 
 /*
 represents client details
@@ -12,6 +13,13 @@ public class Client {
     /*
     client details
      */
+
+    public Client() {
+
+    }
+    public Client(String s) {
+        this.name=s;
+    }
     private ClientRequestStatus status;
 
 
@@ -20,14 +28,65 @@ public class Client {
     private String phone;
     private String eMail;
 
-    private Location startPoint;//location
-    private Location destinationPoint;//location
-
-
-
+    private Locationf startPoint;//location
+    private Locationf destinationPoint;//location
 
     private Time startTime;
     private Time endTime;
+
+    private Long driverId;
+
+    private Timestampf tstamp;
+
+    private String address;
+
+    private Long time0;
+
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAaddress(String t) {
+        this.address = t;
+    }
+
+
+
+    public Long getTime0() {
+        return time0;
+    }
+
+    public void setTime0(Long t) {
+        this.time0 = t;
+    }
+
+
+
+
+
+
+    public Timestampf getTstamp() {
+        return tstamp;
+    }
+
+    public void setTstamp(Timestampf tstamp) {
+        this.tstamp = tstamp;
+    }
+
+
+    public Long getDriverId() {
+        return driverId;
+    }
+
+    public void setDriverId(Long driverId) {
+        this.driverId = driverId;
+    }
+
+
+
+
+
 
     /*
     gets and sets
@@ -94,7 +153,7 @@ public class Client {
         return startPoint;
     }
 
-    public void setStartPoint(Location startPoint) {
+    public void setStartPoint(Locationf startPoint) {
         this.startPoint = startPoint;
     }
 
@@ -102,7 +161,7 @@ public class Client {
         return destinationPoint;
     }
 
-    public void setDestinationPoint(Location destinationPoint) {
+    public void setDestinationPoint(Locationf destinationPoint) {
         this.destinationPoint = destinationPoint;
     }
 

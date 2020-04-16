@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +43,7 @@ import java.util.Locale;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
-//try78
+    //try78
     // private Edittext nameTextView;
     private EditText idEditText;
     private EditText nameEditText;
@@ -51,15 +52,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
     private Button findLocationButton;
+//    private Button findLocationButton2;
     private Button sendClientButton;
+private ImageButton findLocationButton2;
 
-    private TextView locationTextView;
+    // private TextView locationTextView;
     private TextView distanceTextView;
 
 
     Location locationA = new Location("A");//= new Location(from);
     Location locationB = new Location("B");//= new Location(to);
-
+    public String address;
 
     //   final int PLACE_PICKER_REQUEST = 1;
 
@@ -79,7 +82,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        findViews();
+        findViews(getBaseContext());
 
 
 //        task.addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -109,7 +112,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
 
-    private void findViews() {
+    private void findViews(final Context context) {
+
+
 
 
         placeAutocompleteFragment1 = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment1);
@@ -122,42 +127,56 @@ public class MainActivity extends Activity implements View.OnClickListener {
         phoneEditText = (EditText) findViewById(R.id.phoneEditText);
         eMailEditText = (EditText) findViewById(R.id.eMailEditText);
 
-        findLocationButton = (Button) findViewById(R.id.findLocationButton);
-        findLocationButton.setOnClickListener(this);
+//        findLocationButton = (Button) findViewById(R.id.findLocationButton);
+//        findLocationButton.setOnClickListener(this);
+
+        findLocationButton2 = (ImageButton) findViewById(R.id.findLocationButton2);
+        findLocationButton2.setOnClickListener(this);
+
+
+
 
         sendClientButton = (Button) findViewById(R.id.sendClientButton);
+      //  sendClientButton.setEnabled(false);
 //        sendClientButton.setOnClickListener(this);
         Button sendClientButton = findViewById(R.id.sendClientButton);
         sendClientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                final Dialog dialog = new Dialog(MainActivity.this);
-                dialog.setContentView(R.layout.dialog_add_client);
-                dialog.show();
 
-                Button dialog_cancel = dialog.findViewById(R.id.dialog_cancel); //כפתור שנמצא בתוך הדיאלוג
-                dialog_cancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
-                    }
-                });
+                if (isEmpty(idEditText)) {
+                    Toast.makeText(context, " you most inter id", Toast.LENGTH_SHORT).show();
 
-                Button dialog_ok = dialog.findViewById(R.id.dialog_ok);  //כפתור שנמצא בתוך הדיאלוג
-                dialog_ok.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        addClient();
-                        dialog.dismiss();
+                } else {
+                    final Dialog dialog = new Dialog(MainActivity.this);
+                    dialog.setContentView(R.layout.dialog_add_client);
+                    dialog.show();
+
+                    Button dialog_cancel = dialog.findViewById(R.id.dialog_cancel); //כפתור שנמצא בתוך הדיאלוג
+                    dialog_cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    Button dialog_ok = dialog.findViewById(R.id.dialog_ok);  //כפתור שנמצא בתוך הדיאלוג
+                    dialog_ok.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            addClient();
+                            dialog.dismiss();
 
 
-                    }
-                });
+                        }
+                    });
+                }
+
             }
         });
 
-        locationTextView = (TextView) findViewById(R.id.locationTextView);
+        //locationTextView = (TextView) findViewById(R.id.locationTextView);
         distanceTextView = (TextView) findViewById(R.id.distanceTextView);
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -171,8 +190,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
                 // Called when a new location is found by the network location provider.
                 //    Toast.makeText(getBaseContext(), location.toString(), Toast.LENGTH_LONG).show();
-                locationTextView.setText(getPlace(location));////location.toString());
-                placeAutocompleteFragment1.setText(getPlace(location));
+                //locationTextView.setText(getPlace(location));////location.toString());
+
+
+                address=getPlace(location);
+                placeAutocompleteFragment1.setText(address);
+                locationA=location;
 
                 // Remove the listener you previously added
                 //  locationManager.removeUpdates(locationListener);
@@ -195,6 +218,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             public void onPlaceSelected(Place place) {
                 locationA.setLatitude(place.getLatLng().latitude);
                 locationA.setLongitude(place.getLatLng().longitude);
+                address=getPlace(locationA);
                 // showDistance();
                 // .getAddress().toString();//get place details here
             }
@@ -222,8 +246,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
     }
+  //  check if id editText empty
+    private boolean isEmpty(EditText etText) {
+        if (etText.getText().toString().trim().length() > 0)
+            return false;
 
+        return true;
+    }
 
+    @SuppressLint("StaticFieldLeak")
     private void getLocation() {
 
         //     Check the SDK version and whether the permission is already granted or not.
@@ -231,6 +262,74 @@ public class MainActivity extends Activity implements View.OnClickListener {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 5);
 
         } else {
+
+            // getting GPS status
+            Boolean isGPSEnabled = locationManager
+                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
+            // getting network status
+            Boolean isNetworkEnabled = locationManager
+                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            // getting network status
+            Boolean isPassivenabled = locationManager
+                    .isProviderEnabled(LocationManager.PASSIVE_PROVIDER);
+
+
+
+            if (isGPSEnabled) {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 8000, 0, locationListener);
+
+                if (locationManager != null) {
+                    Location location = locationManager
+                            .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                    if (location != null) {
+
+                        //latitude = location.getLatitude();
+                        //longitude = location.getLongitude();
+                    }
+                }
+
+            }
+            else if ( isNetworkEnabled) {
+
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+
+                if (locationManager != null) {
+                    Location location = locationManager
+                            .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+                    if (location != null) {
+
+                        //latitude = location.getLatitude();
+                        //longitude = location.getLongitude();
+                    }
+                }
+                return;
+            }
+            else if (isPassivenabled) {
+
+                locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, locationListener);
+
+                if (locationManager != null) {
+                    Location location = locationManager
+                            .getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+
+                    if (location != null) {
+
+                        //latitude = location.getLatitude();
+                        //longitude = location.getLongitude();
+                    }
+                }
+                return;
+            }
+            else
+            {
+                Toast.makeText(this, "cant access location PROVIDER", Toast.LENGTH_SHORT).show();
+            }
+
+
+
+
             // Android version is lesser than 6.0 or the permission is already granted.
             //stopUpdateButton.setEnabled(true);
             //getLocationButton.setEnabled(false);
@@ -241,6 +340,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
     public String getPlace(Location location) {
+
+
+//        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+//        List<Address> addresses = geocoder.getFromLocation(MyLat, MyLong, 1);
+//        String cityName = addresses.get(0).getAddressLine(0);
+
 
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         List<Address> addresses = null;
@@ -287,7 +392,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
 //        if (v == sendClientButton)
 //            addClient();
-        if (v == findLocationButton)
+        if (v == findLocationButton2)
             getLocation();
 
 //            if (v == searchButton) {
@@ -350,7 +455,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             @Override
             protected Long doInBackground(Void... params) {
                 try {
-                    return BackendFactory.getDB().addClient(contentValues, locationA, locationB, new Utils.Action<Long>() {
+                    return BackendFactory.getDB().addClient(contentValues,address, locationA, locationB, new Utils.Action<Long>() {
                         @Override
                         public void onSuccess(Long obj) {
                             Toast.makeText(getBaseContext(), "Upload successful id: " + obj, Toast.LENGTH_LONG).show();
@@ -441,11 +546,24 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         float distance = locationA.distanceTo(locationB);
 
-        if (distance > 1000)
-            distanceTextView.setText("Distance : " + distance / 1000 + " km");
-        else {
-            distanceTextView.setText("Distance :" + distance + " meter");
+
+        if (distance > 1000) {
+            String d = String.format("%.1f", distance / 1000);
+            distanceTextView.setText("Distance :   " +d+ "  km");
         }
+        else {
+
+            String d = String.format("%.0f", distance );
+            distanceTextView.setText("Distance :  " + distance + "  meter");
+        }
+
+//        if (distance > 1000)
+//            distanceTextView.setText("Distance : " + distance / 1000 + " km");
+//        else {
+//            distanceTextView.setText("Distance :" + distance + " meter");
+//        }
+
+
     }
 
     public void openDialog() {
@@ -454,6 +572,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
         dialog.setTitle("1111111");
         dialog.show();
     }
+
+
+
+
+
+
+
+
 }
 
 
